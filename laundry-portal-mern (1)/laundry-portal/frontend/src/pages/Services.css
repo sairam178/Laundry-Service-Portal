@@ -1,0 +1,6 @@
+.service-category { margin-top: 32px; }
+.service-category h2 { font-size: 1.2rem; color: var(--primary-dark); }
+.service-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.service-price { font-family: var(--font-display); font-weight: 700; color: var(--accent-dark); white-space: nowrap; }
+.service-card p { font-size: 0.9rem; }
+@media (max-width: 700px) { .service-grid { grid-template-columns: 1fr; } }

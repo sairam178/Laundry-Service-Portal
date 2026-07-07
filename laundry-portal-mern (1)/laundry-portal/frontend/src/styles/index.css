@@ -1,0 +1,202 @@
+/* ==========================================================================
+   Design tokens — SudsFlow (Laundry Service Booking Portal)
+   Palette: deep teal (water/clean) + warm coral accent (detergent-bottle pop)
+   Type: Poppins (display) / Inter (body)
+   Signature: soft "bubble" motifs used in the hero and as order-tracking steps
+   ========================================================================== */
+
+:root {
+  --bg: #F5FAFA;
+  --surface: #FFFFFF;
+  --surface-2: #EDF5F4;
+  --ink: #16302F;
+  --muted: #5E7877;
+  --primary: #0E7C7B;
+  --primary-dark: #0A5F5E;
+  --primary-light: #CDEAE8;
+  --accent: #FF6F47;
+  --accent-dark: #E5572F;
+  --success: #2FA36B;
+  --warning: #C98A1F;
+  --danger: #D64545;
+  --border: #DCE8E7;
+
+  --font-display: 'Poppins', 'Segoe UI', sans-serif;
+  --font-body: 'Inter', 'Segoe UI', sans-serif;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 24px;
+  --shadow-sm: 0 1px 3px rgba(22, 48, 47, 0.08);
+  --shadow-md: 0 8px 24px rgba(22, 48, 47, 0.10);
+  --shadow-lg: 0 20px 48px rgba(22, 48, 47, 0.16);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+#root { min-height: 100vh; display: flex; flex-direction: column; }
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  margin: 0 0 0.5rem;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+p { line-height: 1.6; color: var(--muted); margin: 0 0 1rem; }
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+button, input, select, textarea { font-family: inherit; font-size: inherit; }
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.container {
+  width: 100%;
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.main-flex { flex: 1; }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: var(--radius-sm);
+  border: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+.btn:active { transform: translateY(1px); }
+.btn-primary { background: var(--primary); color: #fff; box-shadow: var(--shadow-sm); }
+.btn-primary:hover { background: var(--primary-dark); text-decoration: none; }
+.btn-accent { background: var(--accent); color: #fff; box-shadow: var(--shadow-sm); }
+.btn-accent:hover { background: var(--accent-dark); text-decoration: none; }
+.btn-outline { background: transparent; color: var(--primary); border: 1.5px solid var(--primary); }
+.btn-outline:hover { background: var(--primary-light); text-decoration: none; }
+.btn-ghost { background: transparent; color: var(--ink); }
+.btn-ghost:hover { background: var(--surface-2); text-decoration: none; }
+.btn-danger { background: #fff; color: var(--danger); border: 1.5px solid var(--danger); }
+.btn-danger:hover { background: #FDEDED; }
+.btn-block { width: 100%; }
+.btn-sm { padding: 8px 14px; font-size: 0.85rem; }
+.btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* Cards */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 24px;
+}
+
+/* Forms */
+.form-group { margin-bottom: 18px; }
+.form-group label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.88rem;
+  margin-bottom: 6px;
+  color: var(--ink);
+}
+.form-control {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  color: var(--ink);
+}
+.form-control:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px var(--primary-light); }
+.form-row { display: flex; gap: 16px; flex-wrap: wrap; }
+.form-row .form-group { flex: 1; min-width: 200px; }
+.form-hint { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+.form-error {
+  background: #FDEDED;
+  color: var(--danger);
+  border: 1px solid #F5C6C6;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  margin-bottom: 16px;
+}
+.form-success {
+  background: #EAF7F0;
+  color: var(--success);
+  border: 1px solid #BFE6D2;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  margin-bottom: 16px;
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.badge-pending { background: #FDF1DD; color: var(--warning); }
+.badge-progress { background: var(--primary-light); color: var(--primary-dark); }
+.badge-done { background: #E1F5EA; color: var(--success); }
+.badge-cancelled { background: #FDEDED; color: var(--danger); }
+.badge-paid { background: #E1F5EA; color: var(--success); }
+.badge-unpaid { background: #FDF1DD; color: var(--warning); }
+
+/* Utility */
+.text-muted { color: var(--muted); }
+.text-center { text-align: center; }
+.mt-0 { margin-top: 0; }
+.mt-1 { margin-top: 8px; }
+.mt-2 { margin-top: 16px; }
+.mt-3 { margin-top: 24px; }
+.mb-0 { margin-bottom: 0; }
+.flex { display: flex; }
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
+.flex-wrap { flex-wrap: wrap; }
+.gap-1 { gap: 8px; }
+.gap-2 { gap: 16px; }
+
+.empty-state {
+  text-align: center;
+  padding: 64px 24px;
+  color: var(--muted);
+}
+.empty-state .bubble-icon { font-size: 2.4rem; margin-bottom: 12px; }
+
+/* Bubble motif — signature element reused for tracking dots and decoration */
+.bubble {
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9), rgba(14,124,123,0.15) 70%);
+  border: 1.5px solid var(--primary-light);
+}
+
+@media (max-width: 640px) {
+  .container { padding: 0 16px; }
+  .form-row { flex-direction: column; }
+}

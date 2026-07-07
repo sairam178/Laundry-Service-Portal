@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SudsFlow — Project Presentation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:    #4f8ef7;
+      --indigo:  #6c63ff;
+      --cyan:    #00d4ff;
+      --teal:    #00c9a7;
+      --lavender:#a78bfa;
+      --pink:    #f472b6;
+      --dark:    #0d0f1a;
+      --card:    rgba(255,255,255,0.06);
+      --border:  rgba(255,255,255,0.12);
+    }
+
+    html, body {
+      height: 100%; width: 100%;
+      font-family: 'Outfit', sans-serif;
+      background: var(--dark);
+      color: #e2e8f0;
+      overflow: hidden;
+    }
+
+    .slideshow { position: relative; width: 100vw; height: 100vh; }
+
+    .slide {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      padding: 60px 80px;
+      opacity: 0;
+      transform: translateX(80px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      pointer-events: none;
+    }
+    .slide.active {
+      opacity: 1; transform: translateX(0);
+      pointer-events: all;
+    }
+    .slide.exit {
+      opacity: 0; transform: translateX(-80px);
+    }
+
+    .slide-1  { background: radial-gradient(ellipse at 30% 40%, #1a1060 0%, #0d0f1a 70%); }
+    .slide-2  { background: radial-gradient(ellipse at 70% 30%, #0a2a3a 0%, #0d0f1a 70%); }
+    .slide-3  { background: radial-gradient(ellipse at 20% 70%, #12113a 0%, #0d0f1a 70%); }
+    .slide-4  { background: radial-gradient(ellipse at 80% 60%, #0d1f35 0%, #0d0f1a 70%); }
+    .slide-5  { background: radial-gradient(ellipse at 50% 20%, #1a0d35 0%, #0d0f1a 70%); }
+    .slide-6  { background: radial-gradient(ellipse at 20% 50%, #0d1a1a 0%, #0d0f1a 70%); }
+    .slide-7  { background: radial-gradient(ellipse at 75% 70%, #1a0d1a 0%, #0d0f1a 70%); }
+    .slide-8  { background: radial-gradient(ellipse at 30% 30%, #0d1535 0%, #0d0f1a 70%); }
+    .slide-9  { background: radial-gradient(ellipse at 60% 80%, #0a1a2a 0%, #0d0f1a 70%); }
+    .slide-10 { background: radial-gradient(ellipse at 50% 50%, #1a0a2a 0%, #0d0f1a 70%); }
+
+    .blob {
+      position: absolute; border-radius: 50%;
+      filter: blur(90px); opacity: 0.18; pointer-events: none; z-index: 0;
+    }
+
+    .content { position: relative; z-index: 2; width: 100%; max-width: 1100px; }
+
+    .tag {
+      display: inline-block;
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 6px 16px; border-radius: 50px;
+      margin-bottom: 18px;
+    }
+    .tag-blue   { background: rgba(79,142,247,0.18); color: var(--blue); border: 1px solid rgba(79,142,247,0.3); }
+    .tag-teal   { background: rgba(0,201,167,0.18);  color: var(--teal); border: 1px solid rgba(0,201,167,0.3); }
+    .tag-purple { background: rgba(108,99,255,0.18); color: var(--lavender); border: 1px solid rgba(108,99,255,0.3); }
+    .tag-pink   { background: rgba(244,114,182,0.18);color: var(--pink); border: 1px solid rgba(244,114,182,0.3); }
+    .tag-cyan   { background: rgba(0,212,255,0.18);  color: var(--cyan); border: 1px solid rgba(0,212,255,0.3); }
+
+    h1 { font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 900; line-height: 1.1; }
+    h2 { font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 800; line-height: 1.2; margin-bottom: 32px; }
+    h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+    p  { font-size: 1rem; line-height: 1.7; color: rgba(226,232,240,0.75); }
+
+    .gradient-text {
+      background: linear-gradient(135deg, var(--blue) 0%, var(--cyan) 40%, var(--teal) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .gradient-text-purple {
+      background: linear-gradient(135deg, var(--indigo) 0%, var(--lavender) 60%, var(--pink) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px 28px;
+      backdrop-filter: blur(12px);
+      transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+    .card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.22); }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+    .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; }
+
+    .icon { font-size: 2rem; margin-bottom: 12px; display: block; }
+
+    .pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 50px; padding: 8px 18px; font-size: 0.85rem;
+      font-weight: 600; margin: 5px;
+    }
+
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    thead th {
+      text-align: left; padding: 12px 16px;
+      background: rgba(79,142,247,0.12);
+      border-bottom: 1px solid var(--border);
+      color: var(--blue); font-weight: 700; letter-spacing: 0.05em;
+    }
+    tbody tr { border-bottom: 1px solid rgba(255,255,255,0.05); }
+    tbody tr:hover { background: rgba(255,255,255,0.04); }
+    tbody td { padding: 11px 16px; color: rgba(226,232,240,0.82); }
+    .method { font-weight: 700; font-size: 0.78rem; padding: 3px 10px; border-radius: 6px; }
+    .get    { background: rgba(0,201,167,0.18); color: var(--teal); }
+    .post   { background: rgba(79,142,247,0.18); color: var(--blue); }
+    .put    { background: rgba(251,191,36,0.18); color: #fbbf24; }
+    .delete { background: rgba(244,114,182,0.18); color: var(--pink); }
+
+    .arch-layer {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px 22px;
+      display: flex; align-items: center; gap: 16px; margin-bottom: 12px;
+    }
+    .arch-icon { font-size: 1.6rem; flex-shrink: 0; }
+    .arch-info h3 { font-size: 0.9rem; margin-bottom: 2px; }
+    .arch-info p  { font-size: 0.78rem; }
+    .arch-arrow { text-align: center; font-size: 1.2rem; opacity: 0.4; margin: -4px 0; }
+
+    .nav {
+      position: fixed; bottom: 36px; left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 16px; z-index: 100;
+      background: rgba(13,15,26,0.85);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 10px 22px;
+      backdrop-filter: blur(16px);
+    }
+    .nav-btn {
+      background: none; border: none; cursor: pointer;
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; color: rgba(226,232,240,0.7);
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-btn:hover { background: rgba(79,142,247,0.2); color: var(--blue); }
+    .slide-counter { font-size: 0.82rem; font-weight: 600; color: rgba(226,232,240,0.5); min-width: 52px; text-align: center; }
+    .dots { display: flex; gap: 6px; }
+    .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: rgba(255,255,255,0.2); cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+    }
+    .dot.active { background: var(--blue); transform: scale(1.3); }
+
+    .slide-num {
+      position: absolute; top: 28px; right: 40px;
+      font-size: 0.72rem; font-weight: 700; color: rgba(226,232,240,0.25);
+      letter-spacing: 0.1em;
+    }
+    .logo {
+      position: absolute; top: 28px; left: 40px;
+      font-size: 0.9rem; font-weight: 800; letter-spacing: 0.05em;
+      color: rgba(226,232,240,0.3);
+    }
+    .logo span { color: var(--blue); }
+
+    .sec-item { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 18px; }
+    .sec-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+    .sec-text h3 { font-size: 0.95rem; margin-bottom: 4px; }
+    .sec-text p  { font-size: 0.83rem; }
+
+    .tech-badge {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 10px; background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 22px 16px;
+      text-align: center; transition: transform 0.25s;
+    }
+    .tech-badge:hover { transform: translateY(-5px); }
+    .tech-badge .t-icon { font-size: 2.4rem; }
+    .tech-badge .t-name { font-size: 0.88rem; font-weight: 700; }
+    .tech-badge .t-desc { font-size: 0.72rem; color: rgba(226,232,240,0.5); }
+
+    .future-item {
+      display: flex; gap: 12px; align-items: center;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px 18px; margin-bottom: 10px;
+    }
+    .future-item .fi-icon { font-size: 1.4rem; }
+    .future-item p { font-size: 0.85rem; margin: 0; color: rgba(226,232,240,0.8); }
+
+    .progress-bar {
+      position: fixed; top: 0; left: 0; height: 3px;
+      background: linear-gradient(90deg, var(--blue), var(--cyan), var(--teal));
+      transition: width 0.5s ease; z-index: 200;
+    }
+
+    .role-block { border-left: 3px solid; padding-left: 16px; margin-bottom: 16px; }
+    .role-customer { border-color: var(--cyan); }
+    .role-provider { border-color: var(--teal); }
+    .role-admin    { border-color: var(--pink); }
+    .role-block h3 { font-size: 0.95rem; margin-bottom: 6px; }
+    .role-block ul { padding-left: 16px; }
+    .role-block ul li { font-size: 0.85rem; color: rgba(226,232,240,0.72); line-height: 1.8; }
+
+    .stat { text-align: center; }
+    .stat-num { font-size: 3rem; font-weight: 900; line-height: 1; }
+    .stat-label { font-size: 0.82rem; color: rgba(226,232,240,0.55); margin-top: 6px; letter-spacing: 0.05em; }
+  </style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="slideshow" id="slideshow">
+
+  <!-- SLIDE 1 — TITLE -->
+  <div class="slide slide-1 active" data-slide="1">
+    <div class="blob" style="width:500px;height:500px;background:var(--indigo);top:-100px;left:-120px;"></div>
+    <div class="blob" style="width:350px;height:350px;background:var(--cyan);bottom:-80px;right:-60px;"></div>
+    <div class="logo"><span>Suds</span>Flow</div>
+    <span class="slide-num">01 / 10</span>
+    <div class="content" style="text-align:center;">
+      <div class="tag tag-blue">MERN Stack Project</div>
+      <h1 class="gradient-text" style="margin-bottom:20px;">SudsFlow</h1>
+      <p style="font-size:1.3rem;font-weight:300;max-width:640px;margin:0 auto 36px;color:rgba(226,232,240,0.8);">
+        A full-stack <strong style="color:#fff;">Laundry Service Booking Portal</strong><br/>for Customers, Providers &amp; Admins
+      </p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <span class="pill">🍃 MongoDB</span>
+        <span class="pill">⚡ Express.js</span>
+        <span class="pill">⚛️ React 18</span>
+        <span class="pill">🟢 Node.js</span>
+        <span class="pill">🔐 JWT Auth</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2 — PROBLEM STATEMENT -->
+  <div class="slide slide-2" data-slide="2">
+    <div class="blob" style="width:420px;height:420px;background:var(--cyan);top:-80px;right:-100px;"></div>
+    <div class="logo"><span>Suds</span>Flow</div>
+    <span class="slide-num">02 / 10</span>
+    <div class="content">
+      <div class="tag tag-teal">The Problem</div>
+      <h2>Why SudsFlow?</h2>
+      <div class="grid-2" style="gap:24px;">
+        <div>
+          <div class="card" style="margin-bottom:20px;">
+            <span class="icon">📞</span>
+            <h3>Manual Booking</h3>
+            <p>Customers had to call laundry shops, leading to errors, missed orders, and zero transparency.</p>
+          </div>
+          <div class="card">
+            <span class="icon">📦</span>
+            <h3>No Order Tracking</h3>
+            <p>Once clothes were handed over, customers had no visibility into where their order stood.</p>
+          </div>
+        </div>
+        <div>
+          <div class="card" style="margin-bottom:20px;">
+            <span class="icon">💸</span>
+            <h3>Cash-Only Payments</h3>
+            <p>No digital payment options, making it inconvenient and difficult to track revenue.</p>
+          </div>
+          <div class="card">
+            <span class="icon">📋</span>
+            <h3>No Centralized Management</h3>
+            <p>Admins had no unified platform to manage services, orders, or monitor revenue in real time.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3 — SOLUTION OVERVIEW -->
+  <div class="slide slide-3" data-slide="3">
+    <div class="blob" style="width:500px;height:500px;background:var(--indigo);bottom:-120px;left:-100px;"></div>
+    <div class="logo"><span>Suds</span>Flow</div>
+    <span class="slide-num">03 / 10</span>
+    <div class="content">
+      <div class="tag tag-purple">Solution</div>
+      <h2>What SudsFlow Delivers</h2>
+      <div class="grid-3">
+        <div class="card" style="text-align:center;">
+          <span class="icon">🧺</span>
+          <h3 style="color:var(--cyan);">Easy Booking</h3>
+          <p>Browse services, select quantities, pick a pickup slot and confirm in minutes.</p>
+        </div>
+        <div class="card" style="text-align:center;">
+          <span class="icon">📍</span>
+          <h3 style="color:var(--teal);">Live Tracking</h3>
+          <p>A visual bubble-trail timeline shows every stage from pickup to delivery.</p>
+        </div>
+        <div class="card" style="text-align:center;">
+          <span class="icon">💳</span>
+          <h3 style="color:var(--lavender);">Digital Payments</h3>
+          <p>Card, UPI, or Cash on Delivery. Easily upgradeable to live gateways.</p>
+        </div>
+        <div class="card" style="text-align:center;">
+          <span class="icon">🧑‍🔧</span>
+          <h3 style="color:var(--blue);">Provider Portal</h3>
+          <p>Providers self-assign jobs and advance status through 7 defined stages.</p>
+        </div>
+        <div class="card" style="text-align:center;">
+          <span class="icon">📊</span>
+          <h3 style="color:var(--pink);">Admin Dashboard</h3>
+          <p>Real-time revenue stats, order monitoring, and full service catalog management.</p>
+        </div>
+        <div class="card" style="text-align:center;">
+          <span class="icon">🔐</span>
+          <h3 style="color:#fbbf24;">Secure by Design</h3>
+          <p>JWT auth, bcrypt hashing, role-based access, and server-side price validation.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4 — TECH STACK -->
+  <div class="slide slide-4" data-slide="4">
+    <div class="blob" style="width:400px;height:400px;background:var(--blue);top:-80px;right:-60px;"></div>
+    <div class="logo"><span>Suds</span>Flow</div>
+    <span class="slide-num">04 / 10</span>
+    <div class="content">
+      <div class="tag tag-blue">Technology</div>
+      <h2>Tech Stack</h2>
+      <div class="grid-4" style="margin-bottom:24px;">
+        <div class="tech-badge">
+          <span class="t-icon">🍃</span>
+          <span class="t-name">MongoDB</span>
+          <span class="t-desc">NoSQL Database + Mongoose ODM</span>
+        </div>
+        <div class="tech-badge">
+          <span class="t-icon">⚡</span>
+          <span class="t-name">Express.js</span>
+          <span class="t-desc">REST API Framework for Node</span>
+        </div>
+        <div class="tech-badge">
+          <span class="t-icon">⚛️</span>
+          <span class="t-name">React 18</span>
+          <span class="t-desc">React Router v6 + Axios + CSS</span>
+        </div>
+        <div class="tech-badge">
+          <span class="t-icon">🟢</span>
+          <span class="t-name">Node.js</span>
+          <span class="t-desc">v18+ JavaScript Runtime</span>
+        </div>
+      </div>
+      <div class="grid-3">
+        <div class="card" style="text-align:center;">
+          <span class="icon" style="font-size:1.5rem;">🔐</span>
+          <h3>JWT + bcrypt</h3>
+          <p style="font-size:0.82rem;">Auth tokens &amp; password hashing</p>
+        </div>
+        <div class="card" style="text-align:center;">
+          <span class="icon" style="font-size:1.5rem;">🔗</span>
+          <h3>Axios</h3>
+          <p style="font-size:0.82rem;">HTTP client with JWT interceptor</p>
+        </div>
+        <div class="card" style="text-align:center;">
+          <span class="icon" style="font-size:1.5rem;">🎨</span>
+          <h3>Plain CSS</h3>
+          <p style="font-size:0.82rem;">Design tokens &amp; shared styles</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5 — ARCHITECTURE -->
+  <div class="slide slide-5" data-slide="5">
+    <div class="blob" style="width:450px;height:450px;background:var(--lavender);bottom:-100px;right:-80px;"></div>
+    <div class="logo"><span>Suds</span>Flow</div>
+    <span class="slide-num">05 / 10</span>
+    <div class="content">
+      <div class="tag tag-purple">Architecture</div>
+      <h2>System Architecture</h2>
+      <div style="max-width:700px;margin:0 auto;">
+        <div class="arch-layer">
+          <span class="arch-icon">🌐</span>
+          <div class="arch-info">
+            <h3 style="color:var(--cyan);">Frontend — React 18</h3>
+            <p>Pages: Home, Login, Register, Services, Book, MyOrders, Payment, Provider &amp; Admin dashboards<br/>
+            <strong style="color:#fff;">Port:</strong> localhost:3000 &nbsp;|&nbsp; <strong style="color:#fff;">AuthContext</strong> manages session state globally</p>
+          </div>
+        </div>
+        <div class="arch-arrow">↕️</div>
+        <div class="arch-layer">
+          <span class="arch-icon">⚡</span>
+          <div class="arch-info">
+            <h3 style="color:var(--blue);">Backend — Express.js REST API</h3>
+            <p>Controllers: Auth · Service · Order · Payment &nbsp;|&nbsp; Middleware: JWT Guard · Role Authorize · Error Handler<br/>
+            <strong style="color:#fff;">Port:</strong> localhost:5000 &nbsp;|&nbsp; 13 endpoints across 4 resource groups</p>
+          </div>
+        </div>
+        <div class="arch-arrow">↕️</div>
+        <div class="arch-layer">
+          <span class="arch-icon">🍃</span>
+          <div class="arch-info">
+            <h3 style="color:var(--teal);">Database — MongoDB + Mongoose</h3>
+            <p>Collections: <strong style="color:#fff;">Users</strong> · <strong style="color:#fff;">Services</strong> · <strong style="color:#fff;">Orders</strong> &nbsp;|&nbsp; Full status-history audit trail stored per order</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6 — CUSTOMER FEATURES -->
+  <div class="slide slide-6" data-slide="6">
+    <div class="blob" style="width:400px;height:400px;background:var(--teal);top:-80px;left:-80px;"></div>
+    <div class="logo"><span>Suds</span>Flow</div>
+    <span class="slide-num">06 / 10</span>
+    <div class="content">
+      <div class="tag tag-teal">User Role</div>
+      <h2>Customer Experience</h2>
+      <div class="grid-2">
+        <div>
+          <div class="card" style="margin-bottom:16px;">
+            <h3>🔑 Auth &amp; Profile</h3>
+            <p style="font-size:0.85rem;">Secure JWT-based register and login. Role is set at signup (customer / provider).</p>
+          </div>
+          <div class="card" style="margin-bottom:16px;">
+            <h3>🧺 Browse &amp; Book</h3>
+            <p style="font-size:0.85rem;">Browse services by category, select quantities, enter pickup/delivery address, and choose a date &amp; time slot.</p>
+          </div>
+          <div class="card">
+            <h3>❌ Cancel Booking</h3>
+            <p style="font-size:0.85rem;">Orders can be cancelled while still <em>Pending</em> or <em>Confirmed</em>.</p>
+          </div>
+        </div>
+        <div>
+          <div class="card" style="margin-bottom:16px;">
+            <h3>📍 Live Order Tracking</h3>
+            <p style="font-size:0.85rem;">Visual bubble-trail timeline shows status progression from Pending to Delivered in real time.</p>
+          </div>
+          <div class="card">
+            <h3 style="margin-bottom:14px;">📦 Order Status Journey</h3>
+            <div style="display:flex;flex-wrap:wrap;gap:5px;">
+              <span class="pill" style="font-size:0.7rem;padding:4px 10px;">⏳ Pending</span>
+              <span style="opacity:0.4;align-self:center;">→</span>
+              <span class="pill" style="font-size:0.7rem;padding:4px 10px;">✅ Confirmed</span>
+              <span style="opacity:0.4;align-self:center;">→</span>
+              <span class="pill" style="font-size:0.7rem;padding:4px 10px;">🚗 Picked Up</span>
+              <span style="opacity:0.4;align-self:center;">→</span>
+              <span class="pill" style="font-size:0.7rem;padding:4px 10px;">🧼 In Progress</span>
+              <span style="opacity:0.4;align-self:center;">→</span>
+              <span class="pill" style="font-size:0.7rem;padding:4px 10px;">📦 Ready</span>
+              <span style="opacity:0.4;align-self:center;">→</span>
+              <span class="pill" style="font-size:0.7rem;padding:4px 10px;">🚚 Out for Delivery</span>
+              <span style="opacity:0.4;align-self:center;">→</span>
+              <span class="pill" style="font-size:0.7rem;padding:4px 10px;background:rgba(0,201,167,0.18);border-color:var(--teal);color:var(--teal);">✔️ Delivered</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7 — PROVIDER & ADMIN -->
+  <div class="slide slide-7" data-slide="7">
+    <div class="blob" style="width:450px;height:450px;background:var(--pink);bottom:-100px;right:-80px;"></div>
+    <div class="logo"><span>Suds</span>Flow</div>
+    <span class="slide-num">07 / 10</span>
+    <div class="content">
+      <div class="tag tag-pink">User Roles</div>
+      <h2>Provider &amp; Admin Portals</h2>
+      <div class="grid-2">
+        <div class="card" style="border-color:rgba(0,201,167,0.3);">
+          <h3 style="color:var(--teal);margin-bottom:16px;">🧑‍🔧 Service Provider</h3>
+          <div class="role-block role-provider">
+            <h3>Order Management</h3>
+            <ul>
+              <li>View all <strong>unassigned</strong> orders</li>
+              <li>Self-assign an available order</li>
+              <li>View orders <strong>assigned</strong> to them</li>
+            </ul>
+          </div>
+          <div class="role-block role-provider">
+            <h3>Status Advancement</h3>
+            <ul>
+              <li>Push orders through each stage sequentially</li>
+              <li>Full audit trail stored in <code style="background:rgba(255,255,255,0.08);padding:1px 6px;border-radius:4px;">statusHistory</code></li>
+            </ul>
+          </div>
+        </div>
+        <div class="card" style="border-color:rgba(244,114,182,0.3);">
+          <h3 style="color:var(--pink);margin-bottom:16px;">🛡️ Administrator</h3>
+          <div class="role-block role-admin">
+            <h3>Dashboard</h3>
+            <ul>
+              <li>Total order counts &amp; revenue collected</li>
+              <li>Full order list across all customers</li>
+            </ul>
+          </div>
+          <div class="role-block role-admin">
+            <h3>Service Catalog (CRUD)</h3>
+            <ul>
+              <li>Add new laundry services</li>
+              <li>Edit name, price, category</li>
+              <li>Activate / Deactivate / Delete services</li>
+              <li>Admin role assigned via MongoDB only — cannot be self-elevated</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 8 — API OVERVIEW -->
+  <div class="slide slide-8" data-slide="8">
+    <div class="blob" style="width:400px;height:400px;background:var(--blue);top:-60px;left:-60px;"></div>
+    <div class="logo"><span>Suds</span>Flow</div>
+    <span class="slide-num">08 / 10</span>
+    <div class="content">
+      <div class="tag tag-blue">Backend</div>
+      <h2>API Endpoints</h2>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;">
+        <table>
+          <thead>
+            <tr>
+              <th>Method</th><th>Endpoint</th><th>Access</th><th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="method post">POST</span></td><td>/api/auth/register</td><td>Public</td><td>Register as customer/provider</td></tr>
+            <tr><td><span class="method post">POST</span></td><td>/api/auth/login</td><td>Public</td><td>Log in, returns JWT</td></tr>
+            <tr><td><span class="method get">GET</span></td><td>/api/auth/profile</td><td>Logged in</td><td>Current user profile</td></tr>
+            <tr><td><span class="method get">GET</span></td><td>/api/services</td><td>Public</td><td>List active services</td></tr>
+            <tr><td><span class="method post">POST</span></td><td>/api/services</td><td>Admin</td><td>Create service</td></tr>
+            <tr><td><span class="method put">PUT</span></td><td>/api/services/:id</td><td>Admin</td><td>Update service</td></tr>
+            <tr><td><span class="method delete">DELETE</span></td><td>/api/services/:id</td><td>Admin</td><td>Delete service</td></tr>
+            <tr><td><span class="method post">POST</span></td><td>/api/orders</td><td>Customer</td><td>Create a booking</td></tr>
+            <tr><td><span class="method get">GET</span></td><td>/api/orders/mine</td><td>Customer</td><td>My bookings</td></tr>
+            <tr><td><span class="method get">GET</span></td><td>/api/orders</td><td>Provider/Admin</td><td>All orders</td></tr>
+            <tr><td><span class="method put">PUT</span></td><td>/api/orders/:id/status</td><td>Provider/Admin</td><td>Advance order status</td></tr>
+            <tr><td><span class="method put">PUT</span></td><td>/api/orders/:id/cancel</td><td>Customer</td><td>Cancel a booking</td></tr>
+            <tr><td><span class="method post">POST</span></td><td>/api/payments/:orderId</td><td>Customer</td><td>Simulate digital payment</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9 — SECURITY -->
+  <div class="slide slide-9" data-slide="9">
+    <div class="blob" style="width:420px;height:420px;background:var(--cyan);bottom:-80px;left:-60px;"></div>
+    <div class="logo"><span>Suds</span>Flow</div>
+    <span class="slide-num">09 / 10</span>
+    <div class="content">
+      <div class="tag tag-cyan">Security</div>
+      <h2>Security &amp; Data Integrity</h2>
+      <div class="grid-2">
+        <div>
+          <div class="sec-item">
+            <span class="sec-icon">🔒</span>
+            <div class="sec-text">
+              <h3>bcrypt Password Hashing</h3>
+              <p>Passwords hashed before storage. API never returns password hashes in any response.</p>
+            </div>
+          </div>
+          <div class="sec-item">
+            <span class="sec-icon">🎟️</span>
+            <div class="sec-text">
+              <h3>JWT Authentication</h3>
+              <p>Every protected route validates a Bearer token carrying user ID and role.</p>
+            </div>
+          </div>
+          <div class="sec-item">
+            <span class="sec-icon">🛡️</span>
+            <div class="sec-text">
+              <h3>Role-Based Access Control</h3>
+              <p>Middleware <code style="background:rgba(255,255,255,0.08);padding:1px 6px;border-radius:4px;">authorize()</code> guards every route — customer, provider, and admin routes are completely separated.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="sec-item">
+            <span class="sec-icon">💰</span>
+            <div class="sec-text">
+              <h3>Server-Side Price Calculation</h3>
+              <p>Order totals recalculated from DB at booking time — clients cannot tamper with prices.</p>
+            </div>
+          </div>
+          <div class="sec-item">
+            <span class="sec-icon">📜</span>
+            <div class="sec-text">
+              <h3>Full Status Audit Trail</h3>
+              <p>Every status change appended to <code style="background:rgba(255,255,255,0.08);padding:1px 6px;border-radius:4px;">Order.statusHistory</code> with timestamps.</p>
+            </div>
+          </div>
+          <div class="sec-item">
+            <span class="sec-icon">🚫</span>
+            <div class="sec-text">
+              <h3>No Self-Elevation to Admin</h3>
+              <p>Registration only allows customer/provider. Admin role assigned directly in MongoDB only.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 10 — CONCLUSION -->
+  <div class="slide slide-10" data-slide="10">
+    <div class="blob" style="width:500px;height:500px;background:var(--indigo);top:-100px;right:-80px;"></div>
+    <div class="blob" style="width:300px;height:300px;background:var(--pink);bottom:-60px;left:-40px;"></div>
+    <div class="logo"><span>Suds</span>Flow</div>
+    <span class="slide-num">10 / 10</span>
+    <div class="content">
+      <div class="tag tag-purple">Conclusion</div>
+      <h2 class="gradient-text-purple">Conclusion &amp; Future Scope</h2>
+      <div class="grid-2" style="margin-bottom:20px;">
+        <div>
+          <h3 style="color:var(--lavender);margin-bottom:14px;">✅ What We Built</h3>
+          <div class="grid-2" style="gap:10px;">
+            <div class="card" style="padding:14px;">
+              <div class="stat"><div class="stat-num gradient-text">3</div><div class="stat-label">User Roles</div></div>
+            </div>
+            <div class="card" style="padding:14px;">
+              <div class="stat"><div class="stat-num gradient-text">13</div><div class="stat-label">API Endpoints</div></div>
+            </div>
+            <div class="card" style="padding:14px;">
+              <div class="stat"><div class="stat-num gradient-text">7</div><div class="stat-label">Order Stages</div></div>
+            </div>
+            <div class="card" style="padding:14px;">
+              <div class="stat"><div class="stat-num gradient-text">4</div><div class="stat-label">Tech Layers</div></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 style="color:var(--lavender);margin-bottom:14px;">🚀 Future Enhancements</h3>
+          <div class="future-item"><span class="fi-icon">💳</span><p>Integrate <strong>Razorpay / Stripe</strong> for live payment processing</p></div>
+          <div class="future-item"><span class="fi-icon">📱</span><p>Build a <strong>React Native</strong> mobile app for on-the-go access</p></div>
+          <div class="future-item"><span class="fi-icon">📬</span><p><strong>Email / SMS notifications</strong> for order status updates</p></div>
+          <div class="future-item"><span class="fi-icon">🗺️</span><p><strong>GPS tracking</strong> for real-time delivery location</p></div>
+        </div>
+      </div>
+      <div class="card" style="text-align:center;padding:18px;border-color:rgba(108,99,255,0.3);">
+        <p style="color:rgba(226,232,240,0.9);font-size:1rem;">
+          SudsFlow demonstrates a <strong style="color:#fff;">production-ready MERN architecture</strong> with clean separation of concerns,<br/>
+          secure auth, role-based access, and an extensible codebase ready for real-world deployment.
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Navigation -->
+<nav class="nav">
+  <button class="nav-btn" onclick="changeSlide(-1)">&#8592;</button>
+  <div class="dots" id="dots"></div>
+  <div class="slide-counter" id="counter">1 / 10</div>
+  <button class="nav-btn" onclick="changeSlide(1)">&#8594;</button>
+</nav>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dotsContainer = document.getElementById('dots');
+  const counter = document.getElementById('counter');
+  const progressBar = document.getElementById('progressBar');
+  let current = 0;
+  let isAnimating = false;
+
+  slides.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.addEventListener('click', () => goTo(i));
+    dotsContainer.appendChild(dot);
+  });
+
+  function updateUI() {
+    document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current));
+    counter.textContent = `${current + 1} / ${slides.length}`;
+    progressBar.style.width = ((current + 1) / slides.length * 100) + '%';
+  }
+
+  function goTo(index) {
+    if (isAnimating || index === current) return;
+    isAnimating = true;
+    const dir = index > current ? 1 : -1;
+    slides[current].classList.add('exit');
+    slides[current].classList.remove('active');
+    setTimeout(() => slides[current].classList.remove('exit'), 600);
+    current = index;
+    slides[current].style.transform = `translateX(${dir * 80}px)`;
+    slides[current].style.opacity = '0';
+    slides[current].classList.add('active');
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      slides[current].style.transform = '';
+      slides[current].style.opacity = '';
+      setTimeout(() => isAnimating = false, 650);
+    }));
+    updateUI();
+  }
+
+  function changeSlide(dir) {
+    goTo((current + dir + slides.length) % slides.length);
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changeSlide(1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   changeSlide(-1);
+  });
+
+  let startX = 0;
+  document.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 50) changeSlide(dx < 0 ? 1 : -1);
+  });
+
+  updateUI();
+</script>
+</body>
+</html>
